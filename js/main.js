@@ -8,6 +8,7 @@ const cuerpoTabla = tablaListaCompras.getElementsByTagName("tbody").item(0);
 const contadorProductos = document.getElementById("contadorProductos");
 const productosTotal = document.getElementById("productosTotal");
 const precioTotal = document.getElementById("precioTotal");
+const btnClear = document.getElementById("btnClear");
 
 //Numeración de la primera columna de la tabla
 let cont = 0;
@@ -161,3 +162,34 @@ window.addEventListener("load", function(event){
     productosTotal.innerText = totalEnProductos;
     contadorProductos.innerText = cont;
 });
+
+btnClear.addEventListener("click", function(event){
+    // event.preventDefault();
+    alert("La lista ha sido formateada");
+//borrar el almacenamiento local
+    localStorage.removeItem("datos");
+    localStorage.removeItem("resumen");
+//borrar variables
+    cont = 0;
+    costoTotal = 0;
+    totalEnProductos = 0;
+    datos = new Array ();
+
+    //limpiar la tabla
+
+    contadorProductos.innerText = 0;
+    productosTotal.innerText = 0;
+    precioTotal.innerText = `$ ${costoTotal.toFixed(2)}`;
+
+    //limpiar campos de entrada
+
+    txtName.value = "";
+    txtNumber.value = "";
+    txtName.style.border = "";
+    txtName.style.backgroundColor = "";
+    txtNumber.style.border = "";
+    txtNumber.style.backgroundColor = "";
+    alertValidacionesTexto.innerHTML = "";
+    alertValidaciones.style.display = "none";
+    location.reload();
+})
