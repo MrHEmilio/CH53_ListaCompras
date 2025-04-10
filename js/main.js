@@ -13,6 +13,7 @@ const precioTotal = document.getElementById("precioTotal");
 let cont = 0;
 let costoTotal = 0;
 let totalEnProductos = 0;
+let datos = new Array(); // almacena los elementos como un arreglo
 
 function validarCantidad(){
     if(txtNumber.value.trim().length <= 0){
@@ -89,25 +90,74 @@ btnAgregar.addEventListener("click", function(event){
         <td>${precio}</td>
         </tr>`;
 
+        let elemento = {
+            "cont" : cont,
+            "nombre" : txtName.value,
+            "cantidad" : txtNumber.value,
+            "precio" : precio
+        }
+
+        datos.push(elemento);
+        localStorage.setItem("datos", JSON.stringify(datos));
+        
+        
+        
+        
+
+        
+        
         totalEnProductos += Number(txtNumber.value);
         productosTotal.innerText = totalEnProductos;
         
 
 
 
-    costoTotal += precio * (txtNumber.value);
-    precioTotal.innerText = "$" + costoTotal.toFixed(2);       
-    contadorProductos.innerText = cont;
-
+        costoTotal += precio * Number(txtNumber.value);
+        precioTotal.innerText = "$" + costoTotal.toFixed(2);
+        contadorProductos.innerText = cont;
+        
+        //Aquí hago el local storage del resumen
+        let resumen = { //Puede que aquí tenga que declarar la variable
+            "cont": cont,
+            "totalEnProductos": totalEnProductos,
+            "costoTotal": costoTotal
+        }
+        
+        localStorage.setItem("resumen", JSON.stringify(resumen));
 
         cuerpoTabla.insertAdjacentHTML("beforeend", row);
+        
         txtName.value = "";
         txtNumber.value = "";
         txtName.focus();
+
     }
 
 
     });// btnAgregar
 
+window.addEventListener("load", function(event){
+    event.preventDefault();
+    if(this.localStorage.getItem("datos")!= null){
+        datos = JSON.parse(this.localStorage.getItem("datos"));
+    }
+    datos.forEach((d) => {
+        let row = `<tr>
+        <td>${d.cont}</td>
+        <td>${d.nombre}</td>
+        <td>${d.cantidad}</td>
+        <td>${d.precio}</td>
+        </tr>`;
+    cuerpoTabla.insertAdjacentHTML("beforeend", row);
+    });
 
-//validar la cantidad, que sea un numero, que sea mayor a cero, que el campo no esté vacio
+    if(this.localStorage.getItem("resumen")!=null){
+        let resumen = JSON.parse(this.localStorage.getItem("resumen"));
+        costoTotal = resumen.costoTotal;
+        totalEnProductos =resumen.totalEnProductos;
+        cont = resumen.cont;
+    }
+    precioTotal.innerText = "$" + costoTotal.toFixed(2);  
+    productosTotal.innerText = totalEnProductos;
+    contadorProductos.innerText = cont;
+});
